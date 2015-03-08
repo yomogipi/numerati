@@ -1,0 +1,92 @@
+<h1> Openlayers2 Sample</h1>
+<div id='map_element' style='width: 500px; height: 500px;'></div>
+<div id='map_feature_log'></div>
+
+<script type='text/javascript' src='http://openlayers.org/api/OpenLayers.js'></script>
+<script type='text/javascript'>
+
+  var map = new OpenLayers.Map('map_element',{});
+
+  var vector_format = new OpenLayers.Format.GeoJSON({});
+  var vector_protocol = new OpenLayers.Protocol.HTTP({url : '/data.json', format : vector_format});
+  var vector_strategies =[new OpenLayers.Strategy.Fixed()];
+  var vector_layer =new OpenLayers.Layer.Vector(
+			'Basic Vector Layer', {
+				protocol : vector_protocol,
+				strategies : vector_strategies,
+				isBaseLayer : true
+			});
+  map.addLayer(vector_layer);
+  var vector_style_map = new OpenLayers.StyleMap({});
+  var symbolizers_lookup = {
+                    'project_a' : {
+                        'fillColor' : '#ababab',
+                        'fillOpacity' : .8,
+                        'pointRadius' : 1,
+                        'strokeColor' : '#454545',
+                        'strokeWidth' : 2
+                    },
+                    'project_b' : {
+                        'fillColor' : '#FFFA93',
+                        'fillOpacity' : .8,
+                        'pointRadius' : 1,
+                        'strokeColor' : '#AFAB57',
+                        'strokeWidth' : 2
+                    }
+		}
+  vector_style_map.addUniqueValueRules('default', 'project_name', symbolizers_lookup);
+  vector_layer.styleMap = vector_style_map;
+
+  var select_feature_control = new OpenLayers.Control.SelectFeature(
+                    vector_layer, {
+                    box : true,
+                    multiple : false,
+                    toggle : true,
+                    toggleKey : 'ctrlKey',
+                    multipleKey : 'shiftKey'
+                });
+  map.addControl(select_feature_control);
+
+  select_feature_control.activate();
+
+  function selected_feature(event) {
+ 
+                    //Show the current selected feature (passed in from the event object)
+                    var display_text = 'Clicked on: ' + '<strong>' +
+                        event.feature.attributes.location + '</strong>' + ': ' +
+                        event.feature.attributes.description + '<hr />';
+                    document.getElementById('map_feature_log').innerHTML = display_text;
+ 
+                    //Show all the selected features
+                    document.getElementById('map_feature_log').innerHTML += 'All selected features: ';
+ 
+                    //Now, loop through the selected feature array
+                    for (var i = 0; i < vector_layer.selectedFeatures.length; i++) {
+                        document.getElementById('map_feature_log').innerHTML += vector_layer.selectedFeatures[i].attributes.location + ' | ';
+                    }
+                }
+
+  function unselected_feature(event) {
+                    var display_text = event.feature.attributes.location + ' unselected!' + '<hr />';
+                    document.getElementById('map_feature_log').innerHTML = display_text;
+ 
+                    //Show all the selected features
+                    document.getElementById('map_feature_log').innerHTML += 'All selected features: ';
+ 
+                    //Now, loop through the selected feature array
+                    for (var i = 0; i < vector_layer.selectedFeatures.length; i++) {
+                        document.getElementById('map_feature_log').innerHTML += vector_layer.selectedFeatures[i].attributes.location + ' | ';
+                    }
+                }
+ 
+  //Register the event
+  vector_layer.events.register('featureselected', this, selected_feature);
+  vector_layer.events.register('featureunselected', this, unselected_feature);
+
+
+  if(!map.getCenter()){
+    map.zoomToMaxExtent();
+  }
+
+</script>
+
