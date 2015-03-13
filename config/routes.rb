@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :plans
+  resources :data, only:[:show]
 
   root :to => 'reports#show'
 

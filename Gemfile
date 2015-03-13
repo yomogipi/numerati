@@ -42,4 +42,4 @@ group :development, :test do
 end
 
 gem 'mongoid', '~> 4.0.0'
-
+gem 'moped', '~> 2.0.0'

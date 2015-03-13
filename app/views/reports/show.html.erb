@@ -1,5 +1,5 @@
 <h1> Openlayers2 Sample</h1>
-<div id='map_element' style='width: 500px; height: 500px;'></div>
+<div id='map_element' style='width: 500px; height: 500px; border: solid;'></div>
 <div id='map_feature_log'></div>
 
 <script type='text/javascript' src='http://openlayers.org/api/OpenLayers.js'></script>
@@ -8,7 +8,7 @@
   var map = new OpenLayers.Map('map_element',{});
 
   var vector_format = new OpenLayers.Format.GeoJSON({});
-  var vector_protocol = new OpenLayers.Protocol.HTTP({url : '/data.json', format : vector_format});
+  var vector_protocol = new OpenLayers.Protocol.HTTP({url : '/data/1.json', format : vector_format});
   var vector_strategies =[new OpenLayers.Strategy.Fixed()];
   var vector_layer =new OpenLayers.Layer.Vector(
 			'Basic Vector Layer', {
